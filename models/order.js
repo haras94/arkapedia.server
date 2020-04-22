@@ -8,6 +8,16 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   order.associate = function(models) {
     // associations can be defined here
+    order.belongsTo(models.user, {
+      foreignKey: 'userId',
+      as: 'userOrder',
+      sourceKey: 'id'
+    });
+    order.belongsTo(models.shop, {
+      foreignKey: 'shopId',
+      as: 'shopOrder',
+      sourceKey: 'id'
+    });
   };
   return order;
 };

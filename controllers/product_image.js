@@ -1,5 +1,7 @@
 require('dotenv').config();
 const ProductImages = require('../models').product_image;
+const Products = require('../models').product;
+const Images = require('../models').image;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addProductImage = (req, res, next) => {
@@ -22,6 +24,10 @@ exports.addProductImage = (req, res, next) => {
 exports.getAllProductImages = (req, res, next) => {
   ProductImages.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Products, as: "product", attributes: ["id", "name"] },
+      { model: Images, as: "image", attributes: ["image1", "image2", "image3", "image4", "image5"] }
+    ]
   })
     .then(data => {
       res.status(200).send({

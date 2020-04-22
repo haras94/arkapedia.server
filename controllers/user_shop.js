@@ -1,5 +1,7 @@
 require('dotenv').config();
 const UserShops = require('../models').user_shop;
+const Users = require('../models').user;
+const Shops = require('../models').shop;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addUserShop = (req, res, next) => {
@@ -22,6 +24,10 @@ exports.addUserShop = (req, res, next) => {
 exports.getAllUserShops = (req, res, next) => {
   UserShops.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Users, as: "user", attributes: ["name"] },
+      { model: Shops, as: "shop", attributes: ["name", "rating", "description", "location", "followers", "soldProduct"] },
+    ]
   })
     .then(data => {
       res.status(200).send({
@@ -52,6 +58,10 @@ exports.getUserShopById = async (req, res, next) => {
             id: userShopId
           },
           exclude: ["createdAt", "updatedAt"],
+          include: [
+            { model: Users, as: "user", attributes: ["name"] },
+            { model: Shops, as: "shop", attributes: ["name", "rating", "description", "location", "followers", "soldProduct"] },
+          ]
         })
         .then(data => {
           res.status(200).send({

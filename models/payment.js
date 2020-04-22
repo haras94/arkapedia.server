@@ -5,6 +5,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   payment.associate = function(models) {
     // associations can be defined here
+    payment.hasMany(models.user_payment, {
+      foreignKey: 'id',
+      as: 'userPayment',
+      sourceKey: 'id'
+    });
   };
   return payment;
 };

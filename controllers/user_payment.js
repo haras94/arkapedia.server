@@ -1,5 +1,7 @@
 require('dotenv').config();
 const UserPayments = require('../models').user_payment;
+const Users = require('../models').user;
+const Payments = require('../models').payment;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addUserPayment = (req, res, next) => {
@@ -22,6 +24,10 @@ exports.addUserPayment = (req, res, next) => {
 exports.getAllUserPayments = (req, res, next) => {
   UserPayments.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Users, as: "user", attributes: ["name"] },
+      { model: Payments, as: "payment", attributes: ["name"] },
+    ]
   })
     .then(data => {
       res.status(200).send({

@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   sub_category.associate = function(models) {
     // associations can be defined here
+    sub_category.belongsTo(models.category, {
+      foreignKey: 'categoryId',
+      as: 'category',
+      sourceKey: 'id'
+    });
   };
   return sub_category;
 };

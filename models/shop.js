@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   shop.associate = function(models) {
     // associations can be defined here
+    shop.hasMany(models.user_shop, {
+      foreignKey: 'id',
+      as: 'userShop',
+      sourceKey: 'id'
+    });
   };
   return shop;
 };

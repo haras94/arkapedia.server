@@ -3,8 +3,7 @@ const Users = require('../models').user;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { ErrorHandler } = require('../helper/error');
-// const sendEmail = require('../helper/sendEmail');
-const nodemailer = require('nodemailer');
+const sendEmail = require('../helper/sendEmail');
 
 exports.signUp = (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
@@ -21,30 +20,7 @@ exports.signUp = (req, res, next) => {
     })
     .then(data => {
       const token = jwt.sign( {id: data.id}, process.env.SECRET_KEY );
-
-      var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASS,
-        }
-      });
-
-      var mailOptions = {
-        from: process.env.EMAIL,
-        to: req.body.email,
-        subject: 'POS APP',
-        html: `Click this link to activate your account <a href="http://localhost:8080/auth/login?token=${token}">Activate Account</a>`
-      };
-
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
-
+      sendEmail.sendEmail(token);
       res.status(201).send({
         user: data,
         message: 'User has been created!'

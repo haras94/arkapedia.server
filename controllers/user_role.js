@@ -1,5 +1,7 @@
 require('dotenv').config();
 const UserRoles = require('../models').user_role;
+const Users = require('../models').user;
+const Roles = require('../models').role;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addUserRole = (req, res, next) => {
@@ -22,6 +24,10 @@ exports.addUserRole = (req, res, next) => {
 exports.getAllUserRoles = (req, res, next) => {
   UserRoles.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Users, as: "user", attributes: ["name"] },
+      { model: Roles, as: "role", attributes: ["name"] },
+    ]
   })
     .then(data => {
       res.status(200).send({

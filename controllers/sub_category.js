@@ -1,5 +1,6 @@
 require('dotenv').config();
 const SubCategories = require('../models').sub_category;
+const Categories = require('../models').category;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addSubCategory = (req, res, next) => {
@@ -22,6 +23,9 @@ exports.addSubCategory = (req, res, next) => {
 exports.getAllSubCategories = (req, res, next) => {
   SubCategories.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Categories, as: "category", attributes: ["name"] },
+    ]
   })
     .then(data => {
       res.status(200).send({
@@ -52,6 +56,9 @@ exports.getSubCategoryById = async (req, res, next) => {
             id: subCategoryId
           },
           exclude: ["createdAt", "updatedAt"],
+          include: [
+            { model: Categories, as: "category", attributes: ["name"] },
+          ]
         })
         .then(data => {
           res.status(200).send({
