@@ -9,7 +9,7 @@ exports.addProduct = (req, res, next) => {
       description: req.body.description,
       price: req.body.price,
       discount: req.body.discount,
-      status: req.body.status,
+      status: 1,
       quantity: req.body.quantity,
     })
     .then(data => {
