@@ -32,6 +32,18 @@ module.exports = {
       isActive: {
         type: Sequelize.BOOLEAN
       },
+      shopId: {
+        type: Sequelize.INTEGER
+      },
+      addressId: {
+        type: Sequelize.INTEGER
+      },
+      paymentId: {
+        type: Sequelize.INTEGER
+      },
+      roleId: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

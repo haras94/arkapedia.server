@@ -11,5 +11,6 @@ module.exports = function(app) {
   app.get('/api/arkapedia/user/:userId', controller.getUserById);
   app.patch('/api/arkapedia/user/activation', controller.userActivation);
   app.put('/api/arkapedia/user/:userId', auth.authorized, upload.uploadImage.single('image'), controller.updateUser);
+  app.patch('/api/arkapedia/user/:userId', auth.authorized, upload.uploadImage.single('image'), controller.updateUser);
   app.delete('/api/arkapedia/admin/user/:userId', auth.authorized, controller.deleteUser);
 };

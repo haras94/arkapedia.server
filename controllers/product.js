@@ -1,5 +1,9 @@
 require('dotenv').config();
 const Products = require('../models').product;
+const Images = require('../models').image;
+const Categories = require('../models').category;
+const Shops = require('../models').shop;
+const Tags = require('../models').tag;
 const { ErrorHandler } = require('../helper/error');
 
 exports.addProduct = (req, res, next) => {
@@ -11,6 +15,13 @@ exports.addProduct = (req, res, next) => {
       discount: req.body.discount,
       status: 1,
       quantity: req.body.quantity,
+      weight: req.body.weight,
+      rating: req.body.rating,
+      condition: req.body.condition,
+      imageId: req.body.imageId,
+      categoryId: req.body.categoryId,
+      shopId: req.body.shopId,
+      tagId: req.body.tagId,
     })
     .then(data => {
       res.status(201).send({
@@ -26,6 +37,12 @@ exports.addProduct = (req, res, next) => {
 exports.getAllProducts = (req, res, next) => {
   Products.findAndCountAll({
     exclude: ["createdAt", "updatedAt"],
+    include: [
+      { model: Images, as: "image", attributes: ["image1", "image2", "image3", "image4", "image5"] },
+      { model: Categories, as: "category", attributes: ["name"] },
+      { model: Shops, as: "shop", attributes: ["name", "rating", "location"] },
+      { model: Tags, as: "tag", attributes: ["name"] },
+    ]
   })
     .then(data => {
       res.status(200).send({
@@ -56,6 +73,12 @@ exports.getProductById = async (req, res, next) => {
             id: productId
           },
           exclude: ["createdAt", "updatedAt"],
+          include: [
+            { model: Images, as: "image", attributes: ["image1", "image2", "image3", "image4", "image5"] },
+            { model: Categories, as: "category", attributes: ["name"]},
+            { model: Shops, as: "shop", attributes: ["name", "rating", "location"] },
+            { model: Tags, as: "tag", attributes: ["name"] },
+          ]
         })
         .then(data => {
           res.status(200).send({
@@ -86,6 +109,13 @@ exports.updateProduct = async (req, res, next) => {
           discount: req.body.discount,
           status: req.body.status,
           quantity: req.body.quantity,
+          weight: req.body.weight,
+          rating: req.body.rating,
+          condition: req.body.condition,
+          imageId: req.body.imageId,
+          categoryId: req.body.categoryId,
+          shopId: req.body.shopId,
+          tagId: req.body.tagId,
         }, {
           where: {
             id: productId
@@ -132,4 +162,3 @@ exports.deleteProduct = async (req, res, next) => {
     next(error);
   }
 };
-
