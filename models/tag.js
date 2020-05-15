@@ -1,15 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const payment = sequelize.define('payment', {
+  const tag = sequelize.define('tag', {
     name: DataTypes.STRING
   }, {});
-  payment.associate = function(models) {
+  tag.associate = function(models) {
     // associations can be defined here
-    payment.hasMany(models.user_payment, {
+    tag.hasMany(models.product, {
       foreignKey: 'id',
-      as: 'userPayment',
+      as: 'tag',
       sourceKey: 'id'
     });
   };
-  return payment;
+  return tag;
 };

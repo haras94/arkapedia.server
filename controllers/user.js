@@ -3,8 +3,7 @@ const Users = require('../models').user;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { ErrorHandler } = require('../helper/error');
-// const sendEmail = require('../helper/sendEmail');
-const nodemailer = require('nodemailer');
+const sendEmail = require('../helper/sendEmail');
 
 exports.signUp = (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
@@ -13,38 +12,16 @@ exports.signUp = (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, salt),
-      image: 'http://localhost:5000/uploads/default-user.jpg',
+      image: 'http://192.168.1.97:5000/uploads/default-user.jpg',
       birthdate: req.body.birthdate,
       sex: req.body.sex,
       phone: req.body.phone,
-      isActive: 0
+      isActive: 0,
+      roleId: req.body.roleId || 3
     })
     .then(data => {
       const token = jwt.sign( {id: data.id}, process.env.SECRET_KEY );
-
-      var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASS,
-        }
-      });
-
-      var mailOptions = {
-        from: process.env.EMAIL,
-        to: req.body.email,
-        subject: 'POS APP',
-        html: `Click this link to activate your account <a href="http://localhost:8080/auth/login?token=${token}">Activate Account</a>`
-      };
-
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
-
+      sendEmail.sendEmail(token, req.body.email);
       res.status(201).send({
         user: data,
         message: 'User has been created!'
@@ -63,7 +40,10 @@ exports.signIn = async (req, res, next) => {
       }
     });
     if (!user) {
-      throw new ErrorHandler(403, 'You are not registered! Please signup')
+      res.status(200).json({
+        message: 'You are not registered! Please Signup',
+        id: 0
+      });
     } else {
       Users
         .findOne({
@@ -90,10 +70,16 @@ exports.signIn = async (req, res, next) => {
                   message: 'Login Successfuly!'
                 });
               } else {
-                throw new ErrorHandler(401, 'Please activate your email.')
+                res.status(200).json({
+                  message: 'Please Activate Your Email',
+                  isActive: 0
+                });
               }
             } else {
-              throw new ErrorHandler(401, 'Wrong password!')
+              res.status(200).json({
+                message: 'Wrong Password',
+                status: 0
+              });
             }
           }
         });
@@ -118,20 +104,26 @@ exports.getAllUsers = (req, res, next) => {
 };
 
 exports.checkUsers = async (req, res, next) => {
-  try {
+  // try {
     const user = await Users.findOne({
       where: {
         email: req.body.email
       }
     });
     if (!user) {
-      next();
+      res.status(200).json({
+        message: 'Alhamdulillah',
+        status: 1
+      });
     } else {
-      throw new ErrorHandler(403, 'User has been registered! Please signin')
+      res.status(200).json({
+        message: 'Astagfirullah',
+        status: 0
+      });
     }
-  } catch(error) {
-    next(error);
-  }
+  // } catch(error) {
+  //   next(error);
+  // }
 };
 
 exports.getUserById = async (req, res, next) => {
@@ -201,28 +193,55 @@ exports.userActivation = (req, res, next) => {
     });
 };
 
-exports.updateUser = async (req, res, next) => {
+exports.updateUser = (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
   const userId = req.params.userId;
 
-  try {
-    const user = await Users.findOne({
-      id: userId
-    });
-    if (!user) {
-      throw new ErrorHandler(404, 'User not found!')
-    } else {
+  const user = Users.findOne({
+    id: userId
+  });
+  if (!user) {
+    throw new ErrorHandler(404, 'User not found!')
+  } else {
+    if(req.body.password){
       Users
         .update({
           name: req.body.name,
           email: req.body.email,
           password: bcrypt.hashSync(req.body.password, salt),
-          image: `http://localhost:5000/uploads/${req.file.filename}`,
+          image: 'http://192.168.1.97:5000/uploads/default-user.jpg' ||
+          `http://192.168.1.97:5000/uploads/${req.file.filename}`,
           birthdate: req.body.birthdate,
           sex: req.body.sex,
           phone: req.body.phone,
-          isActive: req.body.isActive,    
-        }, {
+          isActive: 1,
+          roleId: req.body.roleId || 3
+        },
+        {
+          where: {
+            id: userId
+          }
+        })
+        .then(data => {
+          res.status(200).send({
+            message: 'User has been updated!',
+            user: data
+          });
+        });
+    } else {
+      Users
+        .update({
+          name: req.body.name,
+          email: req.body.email,
+          image: 'http://192.168.1.97:5000/uploads/default-user.jpg' ||
+          `http://192.168.1.97:5000/uploads/${req.file.filename}`,
+          birthdate: req.body.birthdate,
+          sex: req.body.sex,
+          phone: req.body.phone,
+          isActive: 1,
+          roleId: req.body.roleId || 3
+        },
+        {
           where: {
             id: userId
           }
@@ -234,8 +253,6 @@ exports.updateUser = async (req, res, next) => {
           });
         });
     }
-  } catch(error) {
-    next(error);
   }
 };
 

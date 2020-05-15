@@ -26,6 +26,27 @@ module.exports = {
       quantity: {
         type: Sequelize.INTEGER
       },
+      weight: {
+        type: Sequelize.INTEGER
+      },
+      rating: {
+        type: Sequelize.INTEGER
+      },
+      condition: {
+        type: Sequelize.BOOLEAN
+      },
+      imageId: {
+        type: Sequelize.INTEGER
+      },
+      categoryId: {
+        type: Sequelize.INTEGER
+      },
+      shopId: {
+        type: Sequelize.INTEGER
+      },
+      tagId: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
