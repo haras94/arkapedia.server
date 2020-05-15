@@ -91,6 +91,43 @@ exports.getProductById = async (req, res, next) => {
   }
 };
 
+exports.getAllProductsByShopId = async (req, res, next) => {
+  const shopId = req.params.shopId;
+
+  try {
+    const product = await Products.findAndCountAll({
+      where: {
+        shopId: shopId
+      }
+    });
+    if (!product) {
+      throw new ErrorHandler(404, 'product not found!');
+    }
+    else {
+      Products
+        .findAndCountAll({
+          where: {
+            shopId: shopId
+          },
+          exclude: ["createdAt", "updatedAt"],
+          include: [
+            { model: Images, as: "image", attributes: ["image1", "image2", "image3", "image4", "image5"] },
+            { model: Categories, as: "category", attributes: ["name"]},
+            { model: Shops, as: "shop", attributes: ["name", "rating", "location"] },
+            { model: Tags, as: "tag", attributes: ["name"] },
+          ]
+        })
+        .then(data => {
+          res.status(200).send({
+            product: data,
+          });
+        });
+    }
+  } catch(error) {
+    next(error);
+  }
+};
+
 exports.updateProduct = async (req, res, next) => {
   const productId = req.params.productId;
 

@@ -5,7 +5,7 @@ const { ErrorHandler } = require('../helper/error');
 exports.addImage = (req, res, next) => {
   Images
     .create({
-      image1: `http://localhost:5000/uploads/${req.file.filename}`,
+      image1: `http://192.168.1.97:5000/uploads/${req.file.filename}`,
       // image2: `http://localhost:5000/uploads/${req.files['image2']}`,
       // image3: `http://localhost:5000/uploads/${req.files['image3']}`,
       // image4: `http://localhost:5000/uploads/${req.files['image4']}`,
@@ -79,7 +79,7 @@ exports.updateImage = async (req, res, next) => {
     } else {
       Images
         .update({
-          image1: `http://localhost:5000/uploads/${req.file.filename}`,
+          image1: `http://192.168.1.97:5000/uploads/${req.file.filename}`,
           // image2: `http://localhost:5000/uploads/${req.files['image2']}`,
           // image3: `http://localhost:5000/uploads/${req.files['image3']}`,
           // image4: `http://localhost:5000/uploads/${req.files['image4']}`,
@@ -130,4 +130,3 @@ exports.deleteImage = async (req, res, next) => {
     next(error);
   }
 };
-

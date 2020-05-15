@@ -5,6 +5,7 @@ module.exports = function(app) {
 
   app.post('/api/arkapedia/admin/product', auth.authorized, redis.clearGetAllProducts, controller.addProduct);
   app.get('/api/arkapedia/product', redis.chaceGetAllProducts, controller.getAllProducts);
+  app.get('/api/arkapedia/product/shop/:shopId', redis.chaceGetAllProducts, controller.getAllProductsByShopId);
   app.get('/api/arkapedia/product/:productId', controller.getProductById);
   app.put('/api/arkapedia/admin/product/:productId', auth.authorized, redis.clearGetAllProducts, controller.updateProduct);
   app.patch('/api/arkapedia/admin/product/:productId', auth.authorized, redis.clearGetAllProducts, controller.updateProduct);
