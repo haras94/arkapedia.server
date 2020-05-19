@@ -27,7 +27,7 @@
 ### Clone
 1. Clone this repository
 ```
-$ git clone https://github.com/haras94/arkapedia.server
+$ git clone https://github.com/haras94/arkapedia.server.git
 $ cd tokosidia-API
 $ npm install
 ```
