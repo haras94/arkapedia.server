@@ -28,7 +28,7 @@
 1. Clone this repository
 ```
 $ git clone https://github.com/haras94/arkapedia.server.git
-$ cd tokosidia-API
+$ cd arkapedia.server
 $ npm install
 ```
 2. create folder named config on the root directory
